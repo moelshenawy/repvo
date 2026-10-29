@@ -1,5 +1,6 @@
 ﻿const fs = require('node:fs');
 const path = require('node:path');
+const { renderBusiness } = require('../lib/business');
 const E = require('../lib/engine');
 const B = require('../lib/blog');
 const { cardioPlan } = require('../lib/cardio');
@@ -8,6 +9,10 @@ const out = path.resolve(__dirname, '../dist');
 // Only this generated output directory is replaced.
 fs.rmSync(out, { recursive: true, force: true });
 fs.cpSync(path.resolve(__dirname, '../public'), out, { recursive: true });
+for (const file of fs.readdirSync(out).filter(file => file.endsWith('.html'))) {
+  const target = path.join(out, file);
+  fs.writeFileSync(target, renderBusiness(fs.readFileSync(target, 'utf8')));
+}
 fs.mkdirSync(path.join(out, 'js'), { recursive: true });
 fs.copyFileSync(path.resolve(__dirname, '../lib/blog.js'), path.join(out, 'js/blog.js'));
 for (const file of ['assets/admin.js', 'assets/mock.js', 'mock-pay.html']) fs.rmSync(path.join(out, file), { force: true });
@@ -28,7 +33,7 @@ const data = { config: { brand: 'Repvo', prices, callMinutes: 45, coachTz: 'Afri
 ], posts: B.STARTER_POSTS.map((p, i) => ({ ...p, id: i + 1, published_at: date - i * 86400000, mins: B.readMins(p.body) })), orders };
 fs.writeFileSync(path.join(out, 'assets/static-data.js'), 'window.REPVO_DATA = ' + JSON.stringify(data).replace(/</g, '\\u003c') + ';\n');
 // Real directories also make clean URLs work with a basic static file server.
-const routes = { account: 'account.html', admin: 'admin.html', terms: 'terms.html', offline: 'offline.html', blog: 'blog.html', 'plan/demo-en': 'plan.html', 'plan/demo-ar': 'plan.html' };
+const routes = { contact: 'contact.html', account: 'account.html', admin: 'admin.html', terms: 'terms.html', offline: 'offline.html', blog: 'blog.html', 'plan/demo-en': 'plan.html', 'plan/demo-ar': 'plan.html' };
 for (const post of data.posts) routes['blog/' + post.slug] = 'blog.html';
 for (const [route, source] of Object.entries(routes)) {
   const dir = path.join(out, route);

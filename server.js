@@ -4,6 +4,7 @@ const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
 const config = require("./lib/config");
+const { renderBusiness } = require("./lib/business");
 const { db, getSetting, setSetting, listFoods, replaceFoods, logEvent, DEFAULTS } = require("./lib/db");
 const E = require("./lib/engine");
 const O = require("./lib/orders");
@@ -43,6 +44,7 @@ function serveFile(res, file, cache = "no-cache") {
     "X-Frame-Options": "DENY",
     "Content-Security-Policy": CSP,
   });
+  if (path.extname(full) === ".html") return res.end(renderBusiness(fs.readFileSync(full, "utf8")));
   fs.createReadStream(full).pipe(res);
 }
 
@@ -128,7 +130,7 @@ function sitePage(req, { title, desc, lang = "en", body, path, type = "website" 
 <nav class="links" aria-label="Main"><a href="/#how">How it works</a><a href="/#pricing">Pricing</a><a href="/#team">Team</a><a href="/blog">Blog</a><a href="/#faq">FAQ</a></nav>
 <a class="navlink myplans" href="/account">My plans</a><a class="btn navcta" href="/#start">Get my plan</a></div></header>
 <main class="blogwrap">${body}</main>
-<footer class="foot"><div class="inner footin"><span><b>Repvo</b> · Lift right. Eat right.</span><span><a href="/blog">Blog</a> · <a href="/terms">Terms, refunds &amp; privacy</a></span></div></footer>
+<footer class="foot"><div class="inner footin"><span><b>Repvo</b> · Lift right. Eat right.</span><span><a href="/blog">Blog</a> · <a href="/terms">Terms, refunds &amp; privacy</a></span>${renderBusiness("{{BUSINESS_FOOTER}}")}</div></footer>
 <script src="/assets/motion.js"></script><script src="/assets/pwa.js"></script></body></html>`;
 }
 const html = (res, status, s, extra = {}) => send(res, status, s, { "Content-Type": "text/html; charset=utf-8", "Content-Security-Policy": CSP, "X-Frame-Options": "DENY", "Cache-Control": "public, max-age=300", ...extra });
@@ -163,7 +165,7 @@ on("GET", "/api/blog", (req, res, p, q) => json(res, P.list({ lang: q.get("lang"
 on("GET", "/api/team", (req, res) => json(res, P.team()));
 on("GET", "/sitemap.xml", (req, res) => {
   const u = (loc, d) => `<url><loc>${esc(config.baseUrl + loc)}</loc>${d ? `<lastmod>${new Date(d).toISOString().slice(0, 10)}</lastmod>` : ""}</url>`;
-  send(res, 200, `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${u("/")}${u("/blog")}${P.list({ limit: 200 }).map(x => u("/blog/" + x.slug, x.updated_at)).join("")}${u("/terms")}</urlset>`, { "Content-Type": "application/xml; charset=utf-8" });
+  send(res, 200, `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${u("/")}${u("/blog")}${P.list({ limit: 200 }).map(x => u("/blog/" + x.slug, x.updated_at)).join("")}${u("/terms")}${u("/contact")}</urlset>`, { "Content-Type": "application/xml; charset=utf-8" });
 });
 on("GET", "/manifest.webmanifest", (req, res) => serveFile(res, "manifest.webmanifest", "public, max-age=3600"));
 on("GET", "/sw.js", (req, res) => serveFile(res, "sw.js", "no-cache"));
@@ -171,6 +173,7 @@ on("GET", "/offline", (req, res) => serveFile(res, "offline.html"));
 on("GET", "/admin", (req, res) => serveFile(res, "admin.html"));
 on("GET", "/plan/:token", (req, res) => serveFile(res, "plan.html"));
 on("GET", "/terms", (req, res) => serveFile(res, "terms.html"));
+on("GET", "/contact", (req, res) => serveFile(res, "contact.html"));
 on("GET", "/robots.txt", (req, res) => send(res, 200, "User-agent: *\nDisallow: /plan/\nDisallow: /admin\nDisallow: /pay/\nDisallow: /account\nSitemap: " + config.baseUrl + "/sitemap.xml\n"));
 on("GET", "/health", (req, res) => json(res, { ok: true }));
 

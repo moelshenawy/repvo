@@ -39,6 +39,18 @@ const tokenOf = url => url.split("/").pop();
   require("../lib/config").baseUrl = base;
   console.log("Repvo end-to-end test on", base);
 
+  await step("contact and policy sections are public without sign-in", async () => {
+    const { business } = require('../lib/business');
+    for (const route of ['/', '/contact', '/terms', '/blog']) {
+      const response = await call('GET', route);
+      assert.equal(response.status, 200, route);
+      assert.ok(response.text.includes(`href="mailto:${business.email}"`), route);
+      assert.ok(response.text.includes(`href="tel:${business.phone}"`), route);
+      assert.ok(!response.text.includes('{{BUSINESS_'), route);
+      if (route === '/terms') for (const id of ['terms', 'refund-policy', 'privacy-policy']) assert.ok(response.text.includes(`id="${id}"`));
+    }
+  });
+
   await step("public config, foods and slots load", async () => {
     const c = await call("GET", "/api/config"); assert.equal(c.json.prices.both, 8);
     const eg = await call("GET", "/api/foods?region=eg"); assert.ok(eg.json.some(f => f.name === "Ful medames")); assert.ok(!eg.json.some(f => f.name === "Tofu, firm"));
@@ -677,7 +689,8 @@ const tokenOf = url => url.split("/").pop();
     assert.ok(db.prepare("SELECT 1 FROM outbox WHERE to_addr='weekly@example.com' AND subject='Your weekly call is booked'").get());
   });
 
-  server.close();
+  await new Promise(resolve => server.close(resolve));
+  db.close();
   const failed = results.filter(r => r[0] === "FAIL");
   console.log(`\n${results.length - failed.length}/${results.length} passed`);
   fs.rmSync(dir, { recursive: true, force: true });

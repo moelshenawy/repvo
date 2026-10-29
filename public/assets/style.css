@@ -277,6 +277,16 @@ details p{margin:10px 0 0;color:var(--muted);max-width:65ch}
 footer.foot{border-top:1px solid var(--line);padding-block:28px;background:var(--panel)}
 .footin{display:flex;flex-wrap:wrap;gap:12px 24px;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
 .footin a{color:var(--muted)}
+.business-footer{flex-basis:100%;min-width:0}
+.business-contact,.business-links{display:flex;flex-wrap:wrap;gap:10px 24px;margin-block:10px}
+.business-contact>span{min-width:0;overflow-wrap:anywhere}
+.business-links a{padding-block:4px}
+.contact-grid{max-width:760px;margin-top:24px}
+.contact-grid>section{min-width:0}
+.contact-details dt{font-weight:600;margin-top:18px}
+.contact-details dd{margin:4px 0 0;overflow-wrap:anywhere}
+#terms,#refund-policy,#privacy-policy{scroll-margin-top:100px}
+@media(max-width:700px){.business-contact{flex-direction:column}}
 .phead{margin-bottom:18px}
 .phead h1{font-family:var(--f-display);font-weight:800;font-size:clamp(32px,5vw,48px);text-transform:uppercase;margin:0;line-height:1}
 .phead p{margin:6px 0 0;color:var(--muted)}
