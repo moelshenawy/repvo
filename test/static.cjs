@@ -3,6 +3,11 @@ const fs = require('node:fs');
 const vm = require('node:vm');
 const path = require('node:path');
 const { execFileSync } = require('node:child_process');
+// Parse the exact file bytes: a UTF-8 BOM makes deployment JSON invalid.
+const deploymentConfig = JSON.parse(fs.readFileSync('vercel.json', 'utf8'));
+assert.equal(deploymentConfig.framework, null);
+assert.equal(deploymentConfig.buildCommand, 'npm run build');
+assert.equal(deploymentConfig.outputDirectory, 'dist');
 execFileSync(process.execPath, ['scripts/build-static.cjs'], { stdio: 'inherit' });
 const context = { window: {}, document: { body: { dataset: {} } }, location: { origin: 'https://static.example' }, URL, Response };
 vm.createContext(context);
