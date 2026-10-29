@@ -1,0 +1,15 @@
+{
+  "name": "fitplan",
+  "version": "1.0.0",
+  "description": "FitPlan: automatic workout and nutrition plans with paid checkout, coach calls and monthly follow-up.",
+  "main": "server.js",
+  "private": true,
+  "engines": {
+    "node": ">=22.13"
+  },
+  "scripts": {
+    "start": "node --disable-warning=ExperimentalWarning server.js",
+    "dev": "PAYMENT_PROVIDER=mock ADMIN_PASSWORD=admin node --disable-warning=ExperimentalWarning server.js",
+    "test": "node --disable-warning=ExperimentalWarning test/e2e.js"
+  }
+}
