@@ -8,8 +8,11 @@
     "node": ">=22.13"
   },
   "scripts": {
-    "start": "node --disable-warning=ExperimentalWarning server.js",
-    "dev": "PAYMENT_PROVIDER=mock ADMIN_PASSWORD=admin node --disable-warning=ExperimentalWarning server.js",
-    "test": "node --disable-warning=ExperimentalWarning test/e2e.js"
+    "start": "npx --yes serve dist -l 3000",
+    "dev": "npm run build && npx --yes serve dist -l 3000",
+    "test": "node test/static.cjs",
+    "build": "node scripts/build-static.cjs",
+    "start:server": "node --disable-warning=ExperimentalWarning server.js",
+    "test:server": "node --disable-warning=ExperimentalWarning test/e2e.js"
   }
 }

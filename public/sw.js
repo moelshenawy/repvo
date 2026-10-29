@@ -1,8 +1,8 @@
 // Repvo service worker: makes the site installable and keeps plans you've
 // opened readable without internet. Payments, admin and sign-in always go
 // to the network.
-const VERSION = "repvo-v2";
-const SHELL = ["/offline", "/assets/style.css", "/assets/plan.js", "/assets/account.js", "/assets/motion.js", "/assets/theme.js", "/assets/pwa.js", "/assets/icon.svg", "/assets/app/icon-192.png"];
+const VERSION = "repvo-static-v1";
+const SHELL = ["/offline", "/assets/style.css", "/assets/plan.js", "/assets/static-data.js", "/assets/static-demo.js", "/js/blog.js", "/assets/account.js", "/assets/motion.js", "/assets/theme.js", "/assets/pwa.js", "/assets/icon.svg", "/assets/app/icon-192.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));

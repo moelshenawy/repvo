@@ -1,3 +1,17 @@
+# Repvo static preview
+
+The default deployment is a static site with bundled pricing, foods, team profiles, articles and English/Arabic sample plans. No server, database or environment variables are required at runtime. Sign-in, payments, email and bookings are unavailable. Form entries do not customize the sample plan or create an order.
+
+Run `npm run build` to generate `dist/`. Run `npm start` to preview it at http://localhost:3000, or serve dist with any static file server. Node is used only during the build and for optional local preview tooling.
+
+Vercel uses the included vercel.json: framework **Other**, build command `npm run build`, output directory `dist`. Redeploy to apply these settings. No runtime start command or environment variables are needed.
+
+Edit sample settings and plan profiles in scripts/build-static.cjs, articles and team profiles in lib/blog.js, and site content in public/. Rebuild after changes. The original backend remains in source for future restoration and is excluded from dist.
+
+---
+
+## Original server documentation (for future backend restoration)
+
 # Repvo
 
 Low-price workout and nutrition plans, generated from the client's numbers, sold online.

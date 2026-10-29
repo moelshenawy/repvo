@@ -4,50 +4,36 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="robots" content="noindex, nofollow">
-<title>Admin · Repvo</title>
+<title>My plans · Repvo</title>
+<meta name="theme-color" content="#1E56C8">
 <link rel="icon" href="/assets/icon.svg" type="image/svg+xml">
+<link rel="manifest" href="/manifest.webmanifest">
+<link rel="apple-touch-icon" href="/assets/app/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Repvo">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Archivo:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="/assets/style.css">
 <script src="/assets/theme.js"></script>
 </head>
 <body>
-<header class="site"><div class="inner nav">
-  <a class="logo" href="/admin"><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#1E56C8"/><polyline points="22,38 45,74 76,24" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><polyline points="60,23 77,22 79,39" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">REP<span>V</span>O</span></a><span class="chip">Admin</span>
-  <button class="btn ghost navcta" type="button" id="logout" hidden style="margin-left:auto">Log out</button>
-</div></header>
-
-<form class="login panel" id="login" hidden>
-  <h1 style="font-family:var(--f-display);text-transform:uppercase;margin:0;font-size:30px">Team login</h1>
-  <label class="f">Password<input type="password" id="pw" autocomplete="current-password" required></label>
-  <button class="btn" type="submit">Log in</button>
-  <p class="err" id="loginerr" hidden></p>
-</form>
-
-<main class="adm" id="app" hidden>
-  <div id="setupwarn"></div>
-  <div class="admtabs" role="tablist" id="tabs">
-    <button type="button" role="tab" data-t="overview" aria-selected="true">Overview</button>
-    <button type="button" role="tab" data-t="orders" aria-selected="false">Orders</button>
-    <button type="button" role="tab" data-t="calls" aria-selected="false">Calls</button>
-    <button type="button" role="tab" data-t="follow" aria-selected="false">Follow-ups</button>
-    <button type="button" role="tab" data-t="settings" aria-selected="false">Prices &amp; hours</button>
-    <button type="button" role="tab" data-t="foods" aria-selected="false">Food database</button>
-    <button type="button" role="tab" data-t="videos" aria-selected="false">Exercise videos</button>
-    <button type="button" role="tab" data-t="blog" aria-selected="false">Blog</button>
-    <button type="button" role="tab" data-t="team" aria-selected="false">Team</button>
-    <button type="button" role="tab" data-t="emails" aria-selected="false">Emails</button>
+<header class="site">
+  <div class="inner nav">
+    <a class="logo" href="/account" aria-label="Repvo"><svg class="mark" viewBox="0 0 100 100" aria-hidden="true"><rect width="100" height="100" rx="24" fill="#1E56C8"/><polyline points="22,38 45,74 76,24" fill="none" stroke="#fff" stroke-width="12" stroke-linecap="round" stroke-linejoin="round"/><polyline points="60,23 77,22 79,39" fill="none" stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">REP<span>V</span>O</span></a>
+    <a class="btn ghost small" href="/">Home</a><a class="btn ghost small" href="/account">Sample plans</a>
   </div>
-  <section id="view"></section>
-</main>
-
-<div class="drawer" id="drawer" hidden><div class="sheet" role="dialog" aria-modal="true" aria-labelledby="dh">
-  <div class="mh"><h2 id="dh">Order</h2><button type="button" class="x" id="dclose" aria-label="Close">×</button></div>
-  <div id="dbody"></div>
-</div></div>
+</header>
+<main class="acct"><div class="panel sec"><p class="eyebrow">Static preview</p><h1>Admin is unavailable</h1><p class="sub">This preview uses sample content. Editing orders, prices and articles requires the backend.</p><a class="btn" href="/">Back to home</a></div></main>
+<footer class="foot"><div class="inner footin">
+  <span><b>Repvo</b> · <span id="slogan">Lift right. Eat right.</span></span>
+  <span><a href="/terms" id="termslink">Terms, refunds &amp; privacy</a></span>
+</div></footer>
 <script src="/assets/motion.js"></script>
-<script src="/js/blog.js"></script>
-<script src="/assets/admin.js"></script>
+<script src="/assets/static-data.js"></script>
+<script src="/assets/static-demo.js"></script>
+
+<script src="/assets/pwa.js"></script>
 </body>
 </html>

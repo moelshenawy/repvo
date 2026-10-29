@@ -3,7 +3,7 @@
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const money = n => "$" + Number(n).toFixed(2).replace(/\.00$/, "");
-const token = location.pathname.split("/").pop();
+const token = (location.pathname.replace(/\/+$/, "").split("/").pop() || "demo-en");
 const qs = new URLSearchParams(location.search);
 const PLAN_URL = t => "/plan/" + encodeURIComponent(t);
 const root = $("root");
@@ -37,10 +37,10 @@ const TXT = {
     why: { train_log: "Log weights and reps for every set and see your progress.", food_log: "Log what you eat and compare it with your targets every day.", videos: "Coach videos and form cues beside every exercise.", recipes: "A healthy recipe for every meal in your plan.", supplements: "What to take for your goal, how much and when, and what to skip.", cardio: "Weekly cardio around your lifting days, with heart-rate zones and a 4-week progression.", follow: "Your coach checks in every week on WhatsApp, and you book one call a week. Renews monthly; cancel any time.", call: "One WhatsApp call with a coach about your plan, your form or your progress." },
     labels: { train_log: "Training tracker", food_log: "Nutrition tracker", videos: "Exercise videos", recipes: "Healthy recipes", supplements: "Supplements guide", cardio: "Cardio plan", workout: "Workout plan", nutrition: "Nutrition plan", both: "Workout + nutrition bundle", follow: "Coach follow-up: weekly check-in + weekly call", call: "Coach call" },
     receipt: "Receipt", sentTo: (e, w) => `Sent to ${e} · WhatsApp ${w}`,
-    targets: "Daily targets", targetsSub: "Calculated from your data. These numbers drive every meal below.",
+    targets: "Daily targets", targetsSub: "Sample targets for the example profile. These numbers drive the meals below.",
     kcal: "Calories", prot: "Protein", carbs: "Carbs", fat: "Fat", vsMaint: a => `${a > 0 ? "+" : ""}${a}% vs maintenance`, maint: "maintenance", gkg: (p, b) => `${p} g/kg × ${b} kg`, rest: "remaining energy", ofKcal: p => `${p}% of calories`,
     lean: "Lean mass", g: "g", u_kcal: "kcal",
-    meals: "Meal plan", mealsSub: "Weigh foods as listed (cooked weight for meat, rice and pasta; dry weight for oats). Tap Swap to change a food; portions recalculate to keep the meal on target.",
+    meals: "Meal plan", mealsSub: "Weigh foods as listed (cooked weight for meat, rice and pasta; dry weight for oats). Portions are prewritten for this sample.",
     swap: "Swap", swapA: n => `Swap ${n}`, noFoods: "No foods available for this meal.", recipe: "Recipe", min: "min", ingredients: "Ingredients", spices: "Spices, herbs and lemon to taste", steps: "Steps",
     training: "Training plan", trainingSub: (d, eq, sp) => `${sp}, ${d} days per week, ${eq}. 4 sets of every exercise (sets × reps on the right), rest between sets underneath.`,
     adjTitle: a => `Adjusted for your ${a}`, adjSwap: "Swapped for a safer option:", adjOut: "Left out:", adjNote: "Replacements that are easy on the area were added. Stop any exercise that causes pain, and book a coach call if pain continues.",
@@ -136,12 +136,7 @@ function setLang(lang) {
 function fmt(ts, tz, o) { try { return new Intl.DateTimeFormat(LOC, { timeZone: tz, ...o }).format(new Date(ts)); } catch { return new Date(ts).toUTCString(); } }
 const tzName = tz => { try { return new Intl.DateTimeFormat("en-US", { timeZone: tz, timeZoneName: "short" }).format(new Date()).split(" ").pop(); } catch { return tz; } };
 const ordinal = n => { if (LOC !== "en-US") return n; const s = ["th", "st", "nd", "rd"], v = n % 100; return n + (s[(v - 20) % 10] || s[v] || s[0]); };
-const api = async (url, opts = {}) => {
-  const r = await fetch(url, { ...opts, headers: { "Content-Type": "application/json", ...(opts.headers || {}) } });
-  const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.error || "Something went wrong. Please try again.");
-  return j;
-};
+const api = window.StaticDemo.request;
 const base = () => `/api/order/${encodeURIComponent(token)}`;
 const todayISO = () => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`; };
 const shiftISO = (iso, days) => { const [y, m, d] = iso.split("-").map(Number); const t = new Date(y, m - 1, d + days); return `${t.getFullYear()}-${String(t.getMonth() + 1).padStart(2, "0")}-${String(t.getDate()).padStart(2, "0")}`; };
@@ -154,7 +149,7 @@ let polls = 0;
 async function load() {
   let o;
   try {
-    const r = await fetch("/api/order/" + encodeURIComponent(token));
+    const r = await window.StaticDemo.response("/api/order/" + encodeURIComponent(token));
     if (r.status === 404) return render404();
     o = await r.json();
   } catch { root.innerHTML = `<div class="err">${L.loadErr}</div>`; return; }
@@ -210,7 +205,7 @@ function render(o) {
   const tabs = [["plan", L.tPlan]].concat(f.includes("train_log") ? [["train", L.tTrain]] : []).concat(f.includes("food_log") ? [["food", L.tFood]] : []).concat(o.follow ? [["coach", L.tCoach]] : []);
   if (!tabs.some(t => t[0] === tab)) tab = "plan";
   let html = `<div class="planhead"><div><p class="eyebrow">${L.order} ${esc(o.id)}</p><h1>${o.flagged ? L.yourCall : L.plansOf(first ? esc(first) : "")}</h1>
-      <p>${L.paidOn(esc(L.labels[o.pkg] || o.pkgName), esc(fmt(o.paidAt, userTZ, { day: "numeric", month: "long", year: "numeric" })))} ${APP ? "" : L.bookmark}</p></div>
+      <p>${o.lang === "ar" ? "خطة توضيحية جاهزة — ليست مخصصة لبياناتك. لا توجد مدفوعات أو حجوزات." : "Prewritten sample for an 80 kg adult, four training days and four meals. Form entries do not change this plan. No purchase was made."}</p></div>
     <div class="actions">${o.flagged ? "" : `<button class="btn ghost noapp" type="button" id="print">${L.print}</button>`}</div></div>`;
   if (tabs.length > 1) html += `<div class="admtabs noprint" role="tablist" id="ptabs">${tabs.map(([k, l]) => `<button type="button" role="tab" data-t="${k}" aria-selected="${k === tab}">${l}</button>`).join("")}</div>`;
   html += `<div id="tabbody" style="display:flex;flex-direction:column;gap:20px"></div>`;
@@ -236,7 +231,7 @@ function renderPlanTab(o) {
       <div class="two">${o.upgrades.map(u => `<div class="feat" style="display:flex;flex-direction:column;gap:10px"><h3 style="margin:0">${esc(L.labels[u.key] || u.label)} · ${u.recurring ? L.perMonth(money(u.usd)) : money(u.usd)}</h3><p>${esc(L.why[u.key] || "")}</p><button class="btn small" type="button" data-buy="${esc(u.key)}" style="align-self:flex-start">${u.slot ? L.pickTime : u.recurring ? L.startFor(money(u.usd)) : L.addFor(money(u.usd))}</button>${u.slot ? '<div class="slotbox" hidden></div>' : ""}</div>`).join("")}</div>
       <p class="note" id="buymsg"></p></div>`;
   }
-  if (!APP) html += `<details class="panel sec noprint"><summary>${L.receipt}</summary><div style="margin-top:12px">${receipt(o)}<p class="note">${L.sentTo(esc(o.contact.email), esc(o.contact.wa))}</p></div></details>`;
+  if (!APP && !window.StaticDemo) html += `<details class="panel sec noprint"><summary>${L.receipt}</summary><div style="margin-top:12px">${receipt(o)}<p class="note">${L.sentTo(esc(o.contact.email), esc(o.contact.wa))}</p></div></details>`;
   const body = $("tabbody");
   body.innerHTML = html;
   body.querySelectorAll(".swap").forEach(b => b.onclick = async () => {

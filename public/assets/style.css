@@ -621,3 +621,5 @@ ul.sl{margin:6px 0 0;padding-inline-start:20px;display:grid;gap:6px;font-size:14
 .lockbtns{display:flex;flex-wrap:wrap;gap:8px}
 @media (max-width:520px){.lockbox{flex-direction:column}}
 .in-app .plock{display:none}
+.demo-banner { padding: 12px 20px; text-align: center; background: #1e56c8; color: #fff; font-size: 14px; line-height: 1.6; }
+.demo-banner a { color: #fff; font-weight: 700; text-decoration: underline; }
