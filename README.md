@@ -8,7 +8,7 @@ Vercel uses the included vercel.json: framework **Other**, build command `npm ru
 
 Edit sample settings and plan profiles in scripts/build-static.cjs, articles and team profiles in lib/blog.js, and site content in public/. Rebuild after changes. The original backend remains in source for future restoration and is excluded from dist.
 
-Public business contact details live in `lib/business.js`. They render into HTML during the static build and through the optional server, including all existing footers and the English `/contact` page. The business address remains pending confirmation. Terms, Refund Policy and Privacy Policy are public at `/terms#terms`, `/terms#refund-policy` and `/terms#privacy-policy` without sign-in.
+Public business contact details live in `lib/business.js`. They render into HTML during the static build and through the optional server, including all existing footers and the English `/contact` page. The owner-provided business address is displayed on the Contact and Terms pages from `lib/business.js`. Terms, Refund Policy and Privacy Policy are public at `/terms`, `/refund-policy` and `/privacy-policy` without sign-in.
 
 ---
 
@@ -66,7 +66,7 @@ npm test
    - `PAYMENT_PROVIDER=stripe`, `STRIPE_SECRET_KEY`.
    - Add a webhook endpoint `BASE_URL/webhooks/stripe` with events `checkout.session.completed`, `checkout.session.async_payment_succeeded`, `invoice.paid`, `invoice.payment_failed`, `customer.subscription.deleted`, then put its signing secret in `STRIPE_WEBHOOK_SECRET`.
 5. **Email.** Create a free Resend account, verify your domain, set `RESEND_API_KEY`, `MAIL_FROM` (an address on that domain) and `COACH_EMAIL` (where new-order alerts go).
-6. **Terms page.** Review `public/terms.html` before launch. Update confirmed business contact details in `lib/business.js` and rebuild; the physical address is pending confirmation. Payment providers check for this page. Have it reviewed by a lawyer.
+6. **Terms page.** Review `public/terms.html` before launch. Update confirmed business contact details in `lib/business.js` and rebuild; the configured address is displayed on the Contact and Terms pages. Payment providers check for this page. Have it reviewed by a lawyer.
 7. **Exercise videos.** Record a short demo for each exercise (101 in total, listed in Admin → Exercise videos; each already has a public demo video you can replace), upload them to YouTube as unlisted, Vimeo, or any host with a direct .mp4 link, and paste each link there. Then tick "Sell the video add-on". Until you tick it, the $10 video add-on stays hidden on the site.
 8. **Admin.** Log in at `/admin`, set prices, call hours and working days, check the food list. The yellow box at the top lists anything still missing.
 9. **Back up** the database file (`DB_PATH`) regularly; it holds every order.

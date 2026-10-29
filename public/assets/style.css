@@ -281,6 +281,11 @@ footer.foot{border-top:1px solid var(--line);padding-block:28px;background:var(-
 .business-contact,.business-links{display:flex;flex-wrap:wrap;gap:10px 24px;margin-block:10px}
 .business-contact>span{min-width:0;overflow-wrap:anywhere}
 .business-links a{padding-block:4px}
+.legal-page main .inner{min-width:0;overflow-wrap:anywhere}
+.legal-page .business-links{gap:12px 24px;padding:12px 0}
+.legal-page .business-links a{display:inline-flex;align-items:center;min-height:44px}
+.legal-page main p{line-height:1.7}
+@media(max-width:480px){.legal-page .nav{flex-wrap:wrap;gap:12px}.legal-page .business-links{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px 16px}}
 .contact-grid{max-width:760px;margin-top:24px}
 .contact-grid>section{min-width:0}
 .contact-details dt{font-weight:600;margin-top:18px}

@@ -5,6 +5,7 @@ const path = require("node:path");
 const crypto = require("node:crypto");
 const config = require("./lib/config");
 const { renderBusiness } = require("./lib/business");
+const { policyPage } = require("./lib/legal");
 const { db, getSetting, setSetting, listFoods, replaceFoods, logEvent, DEFAULTS } = require("./lib/db");
 const E = require("./lib/engine");
 const O = require("./lib/orders");
@@ -165,7 +166,7 @@ on("GET", "/api/blog", (req, res, p, q) => json(res, P.list({ lang: q.get("lang"
 on("GET", "/api/team", (req, res) => json(res, P.team()));
 on("GET", "/sitemap.xml", (req, res) => {
   const u = (loc, d) => `<url><loc>${esc(config.baseUrl + loc)}</loc>${d ? `<lastmod>${new Date(d).toISOString().slice(0, 10)}</lastmod>` : ""}</url>`;
-  send(res, 200, `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${u("/")}${u("/blog")}${P.list({ limit: 200 }).map(x => u("/blog/" + x.slug, x.updated_at)).join("")}${u("/terms")}${u("/contact")}</urlset>`, { "Content-Type": "application/xml; charset=utf-8" });
+  send(res, 200, `<?xml version="1.0" encoding="UTF-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${u("/")}${u("/blog")}${P.list({ limit: 200 }).map(x => u("/blog/" + x.slug, x.updated_at)).join("")}${u("/terms")}${u("/refund-policy")}${u("/privacy-policy")}${u("/contact")}</urlset>`, { "Content-Type": "application/xml; charset=utf-8" });
 });
 on("GET", "/manifest.webmanifest", (req, res) => serveFile(res, "manifest.webmanifest", "public, max-age=3600"));
 on("GET", "/sw.js", (req, res) => serveFile(res, "sw.js", "no-cache"));
@@ -173,6 +174,9 @@ on("GET", "/offline", (req, res) => serveFile(res, "offline.html"));
 on("GET", "/admin", (req, res) => serveFile(res, "admin.html"));
 on("GET", "/plan/:token", (req, res) => serveFile(res, "plan.html"));
 on("GET", "/terms", (req, res) => serveFile(res, "terms.html"));
+for (const policy of ['refund-policy', 'privacy-policy']) {
+  on('GET', '/' + policy, (req, res) => html(res, 200, renderBusiness(policyPage(fs.readFileSync(path.join(PUBLIC, 'terms.html'), 'utf8'), policy))));
+}
 on("GET", "/contact", (req, res) => serveFile(res, "contact.html"));
 on("GET", "/robots.txt", (req, res) => send(res, 200, "User-agent: *\nDisallow: /plan/\nDisallow: /admin\nDisallow: /pay/\nDisallow: /account\nSitemap: " + config.baseUrl + "/sitemap.xml\n"));
 on("GET", "/health", (req, res) => json(res, { ok: true }));

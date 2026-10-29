@@ -41,13 +41,19 @@ const tokenOf = url => url.split("/").pop();
 
   await step("contact and policy sections are public without sign-in", async () => {
     const { business } = require('../lib/business');
-    for (const route of ['/', '/contact', '/terms', '/blog']) {
+    for (const route of ['/', '/contact', '/terms', '/refund-policy', '/privacy-policy', '/blog']) {
       const response = await call('GET', route);
       assert.equal(response.status, 200, route);
       assert.ok(response.text.includes(`href="mailto:${business.email}"`), route);
       assert.ok(response.text.includes(`href="tel:${business.phone}"`), route);
       assert.ok(!response.text.includes('{{BUSINESS_'), route);
       if (route === '/terms') for (const id of ['terms', 'refund-policy', 'privacy-policy']) assert.ok(response.text.includes(`id="${id}"`));
+    }
+    for (const route of ['/contact', '/terms', '/refund-policy', '/privacy-policy']) {
+      const response = await call('GET', route, undefined, { 'User-Agent': 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) Mobile' });
+      assert.equal(response.status, 200, 'Mobile public access: ' + route);
+      assert.ok(!response.text.includes('Pending confirmation'));
+      if (route === '/contact' || route === '/terms') assert.ok(response.text.includes(business.address));
     }
   });
 

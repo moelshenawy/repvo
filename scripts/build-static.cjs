@@ -1,6 +1,7 @@
 ﻿const fs = require('node:fs');
 const path = require('node:path');
 const { renderBusiness } = require('../lib/business');
+const { policyPage } = require('../lib/legal');
 const E = require('../lib/engine');
 const B = require('../lib/blog');
 const { cardioPlan } = require('../lib/cardio');
@@ -9,6 +10,10 @@ const out = path.resolve(__dirname, '../dist');
 // Only this generated output directory is replaced.
 fs.rmSync(out, { recursive: true, force: true });
 fs.cpSync(path.resolve(__dirname, '../public'), out, { recursive: true });
+const terms = fs.readFileSync(path.join(out, 'terms.html'), 'utf8');
+for (const policy of ['refund-policy', 'privacy-policy']) {
+  fs.writeFileSync(path.join(out, policy + '.html'), policyPage(terms, policy));
+}
 for (const file of fs.readdirSync(out).filter(file => file.endsWith('.html'))) {
   const target = path.join(out, file);
   fs.writeFileSync(target, renderBusiness(fs.readFileSync(target, 'utf8')));
@@ -33,7 +38,7 @@ const data = { config: { brand: 'Repvo', prices, callMinutes: 45, coachTz: 'Afri
 ], posts: B.STARTER_POSTS.map((p, i) => ({ ...p, id: i + 1, published_at: date - i * 86400000, mins: B.readMins(p.body) })), orders };
 fs.writeFileSync(path.join(out, 'assets/static-data.js'), 'window.REPVO_DATA = ' + JSON.stringify(data).replace(/</g, '\\u003c') + ';\n');
 // Real directories also make clean URLs work with a basic static file server.
-const routes = { contact: 'contact.html', account: 'account.html', admin: 'admin.html', terms: 'terms.html', offline: 'offline.html', blog: 'blog.html', 'plan/demo-en': 'plan.html', 'plan/demo-ar': 'plan.html' };
+const routes = { 'refund-policy': 'refund-policy.html', 'privacy-policy': 'privacy-policy.html', contact: 'contact.html', account: 'account.html', admin: 'admin.html', terms: 'terms.html', offline: 'offline.html', blog: 'blog.html', 'plan/demo-en': 'plan.html', 'plan/demo-ar': 'plan.html' };
 for (const post of data.posts) routes['blog/' + post.slug] = 'blog.html';
 for (const [route, source] of Object.entries(routes)) {
   const dir = path.join(out, route);

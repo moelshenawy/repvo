@@ -10,7 +10,7 @@
 <link rel="stylesheet" href="/assets/style.css">
 <script src="/assets/theme.js"></script>
 </head>
-<body>
+<body class="legal-page">
 <header class="site"><div class="inner nav"><a class="logo" href="/" aria-label="Repvo home"><span class="wm">REP<span>V</span>O</span></a><a class="btn ghost small" href="/">Home</a></div></header>
 <main class="band"><div class="inner">
 <h1 class="h2">Contact</h1>
@@ -21,9 +21,9 @@
     <dl class="contact-details">
       <dt>Email</dt><dd>{{BUSINESS_EMAIL}}</dd>
       <dt>Phone</dt><dd>{{BUSINESS_PHONE}}</dd>
-      <dt>Business address</dt><dd>{{BUSINESS_ADDRESS_EN}}</dd>
+      {{BUSINESS_ADDRESS_ROW}}
     </dl>
-    <p><a href="/terms#terms">Terms</a> · <a href="/terms#refund-policy">Refund Policy</a> · <a href="/terms#privacy-policy">Privacy Policy</a></p>
+    <nav class="business-links" aria-label="Legal pages"><a href="/refund-policy">Refund Policy</a><a href="/terms">Terms</a><a href="/privacy-policy">Privacy Policy</a><a href="/contact">Contact</a></nav>
   </section>
 </div>
 </div></main>
